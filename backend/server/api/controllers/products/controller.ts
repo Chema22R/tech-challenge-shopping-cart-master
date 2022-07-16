@@ -20,13 +20,5 @@ export class Controller {
       res.status(201).location(`/api/v1/product/${r.id}`).json(r)
     );
   }
-
-  cart(req: Request, res: Response): void {
-    const cart = req.body;
-    ProductsService.cart(cart).then((r) => {
-      if (r) res.status(200).json(r);
-      else res.status(404).end();
-    });
-  }
 }
 export default new Controller();

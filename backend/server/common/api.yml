@@ -1,4 +1,4 @@
-openapi: 3.0.2
+openapi: 3.0.3
 info:
   title: cart-api
   description: Cart API
@@ -8,6 +8,8 @@ servers:
 tags:
 - name: Products
   description: Simple product endpoints
+- name: Cart
+  description: Simple cart endpoints
 - name: Specification
   description: The swagger API specification
 paths:
@@ -35,28 +37,6 @@ paths:
         200:
           description: Returns all products
           content: {}
-  /products/cart:
-    get:
-      tags:
-      - Cart
-      - Products
-      description: Calculate the price for multiple ranges of products and their grand total
-      requestBody:
-        description: The schema of the cart
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/CartProductBody'
-        required: true
-      responses:
-        200:
-          description: Returns the price for each range of products and their grand total
-          content: {}
-        404:
-          description: One or more products not found
-          content: {}
   /products/{id}:
     get:
       tags:
@@ -74,6 +54,27 @@ paths:
           content: {}
         404:
           description: Product not found
+          content: {}
+  /cart:
+    put:
+      tags:
+      - Cart
+      description: Calculate the price for multiple ranges of products and their grand total
+      requestBody:
+        description: The schema of the cart
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CartProductBody'
+        required: true
+      responses:
+        200:
+          description: Returns the price for each range of products and their grand total
+          content: {}
+        404:
+          description: One or more products not found
           content: {}
   /spec:
     get:

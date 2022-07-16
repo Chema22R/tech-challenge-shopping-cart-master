@@ -4,5 +4,4 @@ export default express
   .Router()
   .post('/', controller.create)
   .get('/', controller.all)
-  .get('/cart', controller.cart)
   .get('/:id', controller.byId);
