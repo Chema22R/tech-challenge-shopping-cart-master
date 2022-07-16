@@ -13,9 +13,13 @@ function applyOffers(
 ): Promise<CartOutput> {
   L.info('apply offers to cart');
 
+  // The following line would replace all the following 4 const if the target was set on es2019+
+  // const quantities = Object.fromEntries(cart.map(({ name, quantity }) => [name, quantity]));
   const soups = cart.filter(({ name }) => name === 'Soup')[0]?.quantity;
   const breads = cart.filter(({ name }) => name === 'Bread')[0]?.quantity;
   const cheese = cart.filter(({ name }) => name === 'Cheese')[0]?.quantity;
+  const milk = cart.filter(({ name }) => name === 'Milk')[0]?.quantity;
+  let appliedOffers = false;
 
   if (soups && breads) {
     const offer: Offer = {
@@ -37,9 +41,11 @@ function applyOffers(
         return true;
       }
     });
+
+    appliedOffers = true;
   }
 
-  if (soups && new Date().getDay() === 6) {
+  if (soups && new Date().getDay() === 0) {
     const offer = {
       name: 'Sunday Soup Sale',
       description: 'Buy any can of soup on a Sunday and get 10% off.',
@@ -57,7 +63,9 @@ function applyOffers(
         return true;
       }
     });
-  } else if (cheese) {
+
+    appliedOffers = true;
+  } else if (cheese && milk) {
     const offer = {
       name: 'Dairy Delicious',
       description:
@@ -77,6 +85,8 @@ function applyOffers(
         return true;
       }
     });
+
+    appliedOffers = true;
   }
 
   const grandTotalWithOffers = cart.reduce(
@@ -87,8 +97,7 @@ function applyOffers(
   return Promise.resolve({
     cart,
     grandTotal,
-    grandTotalWithOffers:
-      grandTotal !== grandTotalWithOffers ? grandTotalWithOffers : undefined,
+    grandTotalWithOffers: appliedOffers ? grandTotalWithOffers : undefined,
   });
 }
 
