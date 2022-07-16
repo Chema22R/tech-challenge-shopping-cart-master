@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.2
 info:
   title: cart-api
   description: Cart API
@@ -34,6 +34,28 @@ paths:
       responses:
         200:
           description: Returns all products
+          content: {}
+  /products/cart:
+    get:
+      tags:
+      - Cart
+      - Products
+      description: Calculate the price for multiple ranges of products and their grand total
+      requestBody:
+        description: The schema of the cart
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CartProductBody'
+        required: true
+      responses:
+        200:
+          description: Returns the price for each range of products and their grand total
+          content: {}
+        404:
+          description: One or more products not found
           content: {}
   /products/{id}:
     get:
@@ -80,3 +102,16 @@ components:
         cost:
           type: number
           example: 1099
+    CartProductBody:
+      title: Cart Product
+      required:
+      - name
+      - quantity
+      type: object
+      properties:
+        name:
+          type: string
+          example: Jam
+        quantity:
+          type: number
+          example: 10

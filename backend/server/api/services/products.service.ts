@@ -8,6 +8,13 @@ interface Product {
   cost: number;
 }
 
+interface CartProduct {
+  name: string;
+  quantity: number;
+  individualPrice: string;
+  totalPrice: string;
+}
+
 const products: Product[] = [
   { id: id++, name: 'Soup', customerPrice: 199, cost: 186 },
   { id: id++, name: 'Bread', customerPrice: 87, cost: 21 },
@@ -36,6 +43,37 @@ export class ProductsService {
     };
     products.push(product);
     return Promise.resolve(product);
+  }
+
+  cart(cart: Array<CartProduct>): Promise<object> {
+    L.info(
+      `calculate the prices for ${cart.length} products and their grand total`
+    );
+
+    let grandTotal = 0;
+
+    const state = cart.every((cartProduct, i) => {
+      products.some((product) => {
+        if (product.name === cartProduct.name) {
+          cart[i].individualPrice = `$${product.customerPrice / 100}`;
+          cart[i].totalPrice = `$${
+            (product.customerPrice * cartProduct.quantity) / 100
+          }`;
+          grandTotal += product.customerPrice * cartProduct.quantity;
+
+          return true;
+        }
+      });
+
+      return !!cart[i].individualPrice;
+    });
+
+    return state
+      ? Promise.resolve({
+          cart,
+          grandTotal: `$${grandTotal / 100}`,
+        })
+      : Promise.resolve(null);
   }
 }
 
